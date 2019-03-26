@@ -61,7 +61,7 @@ public class Minesweeper {
       
    }
 
-   public void printboard() {
+   public static void printboard() {
 	   
 	   System.out.println("Board:");
        for(int i = 0;i < rows; i++) {
@@ -104,6 +104,9 @@ public class Minesweeper {
         	   
         	   if(mineDetector[xCoor][yCoor] == '*') {
         		   lose();
+        		   System.out.println();
+        		   System.out.println("FINAL BOARD");
+                   printboard();
         		   System.exit(0);
         	   }
         	   
@@ -140,9 +143,6 @@ public class Minesweeper {
    public static void main(String args[]) {
        Minesweeper game = new Minesweeper(3,3,1);
        run();
-       
-       System.out.println("FINAL BOARD");
-       game.printboard();
    }
 }
 
