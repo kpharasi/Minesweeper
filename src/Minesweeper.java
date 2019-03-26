@@ -1,35 +1,43 @@
 import java.util.Random;
+import java.util.Scanner;
 
 public class Minesweeper {
 
-   private int[][] board;
-   private char[][] mineDetector;
-   private int rows;
-   private int cols;
+   private static int[][] board;
+   private static char[][] mineDetector;
+   private static char[][] gameboard;
+   private static  int rows;
+   private static int cols;
+   private static int noOfopenedslots;
+   private static int noofMines;
 
    // Constructor to develop a board with mines
-   public Minesweeper(int rows, int cols, int noofMines) {
+   public Minesweeper(int r, int c, int mines) {
 	   
-	   this.rows = rows;
-	   this.cols = cols;
+	   rows = r;
+	   cols = c;
+	   noOfopenedslots = 0;
+	   noofMines = mines;
 	   
        Random xIdx = new Random();
        Random yIdx = new Random();
 
        mineDetector = new char[rows][cols];
        board = new int[rows][cols];
+       gameboard = new char[rows][cols];
        
        for(int i = 0;i < rows; i++) {
            for(int j = 0;j < cols; j++) {
         	   mineDetector[i][j] = '_';
+        	   gameboard[i][j] = '_';
            }
        }
        
        for(int i = 0;i < noofMines; i++) {
-           int r = xIdx.nextInt(rows);
-           int c = yIdx.nextInt(cols);
+           int rw = xIdx.nextInt(rows);
+           int cl = yIdx.nextInt(cols);
 
-           mineDetector[r][c] = '*';
+           mineDetector[rw][cl] = '*';
        }
 
        for(int i = 0;i < rows; i++) {
@@ -74,10 +82,66 @@ public class Minesweeper {
        }
        
    }
+   
+   public static void printgameboard() {
+       for(int i = 0;i < rows; i++) {
+           for(int j = 0;j < cols; j++) {
+               System.out.print(gameboard[i][j]);
+           }
+           System.out.println();
+       }
+   }
+   
+   // Function to start the game till winner decided
+   public static void run() {
+	   try (Scanner input = new Scanner(System.in)) {
+		   while(true) {
+        	   String inputString = input.nextLine().trim();
+        	   String[] ipArr = inputString.split(",");
+        	   
+        	   int xCoor = Integer.parseInt(ipArr[0]);
+        	   int yCoor = Integer.parseInt(ipArr[1]);
+        	   
+        	   if(mineDetector[xCoor][yCoor] == '*') {
+        		   lose();
+        		   System.exit(0);
+        	   }
+        	   
+        	   noOfopenedslots++;
+        	   gameboard[xCoor][yCoor] = Character.forDigit(board[xCoor][yCoor], 10);
+               if(hasWon()){
+            	   win();
+            	   System.exit(0);
+               }
+               printgameboard();
+           }
+	   } catch (Exception e) {
+           e.printStackTrace();
+       } 
+   }
+   
+   public static void win() {
+	   System.out.println("CONGRATS!! YOU HAVE WON THE GAME");
+   }
+   
+   public static void lose() {
+	   System.out.println("SORRY YOU LOST!! BETTER LUCK NEXT TIME");
+   }
+   
+   // Function to see if user has won the game
+   public static boolean hasWon() {
+	   if(noOfopenedslots == ((rows*cols) - noofMines)) {
+		   return true; 
+	   } else {
+		   return false;
+	   } 
+   }
 
    public static void main(String args[]) {
-
        Minesweeper game = new Minesweeper(3,3,1);
+       run();
+       
+       System.out.println("FINAL BOARD");
        game.printboard();
    }
 }
